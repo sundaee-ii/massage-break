@@ -23,12 +23,11 @@
 }
 *{box-sizing:border-box}
 /* Safari ใช้สีพื้นหลังทึบนี้ระบายใต้แถบเวลาและแถบที่อยู่เว็บ */
-html,body{background-color:#F4F6F2;overscroll-behavior:none}
-/* หน้าแรก: พื้นที่ใต้แถบที่อยู่เว็บใช้สีเนินเขาชั้นล่างสุด */
-html.is-home,html.is-home body{background-color:#6A8F4C}
-/* แถบบางติดขอบบน ให้ Safari ระบายสีฟ้าใต้แถบเวลา (อยู่ในโซนแถบเวลา มองไม่เห็นเป็นเส้น) */
-.edge-top{position:fixed;top:0;left:0;right:0;height:4px;background:#A9CAE8;z-index:30;pointer-events:none}
-html.is-home .edge-top{display:none}
+/* Safari ระบายใต้แถบเวลาด้วยสีพื้นหลังนี้ */
+html,body{background-color:#A9CAE8;overscroll-behavior:none}
+/* แถบบางติดขอบล่าง: Safari ใช้สีนี้ระบายใต้แถบที่อยู่เว็บ */
+.edge-bottom{position:fixed;left:0;right:0;bottom:0;height:2px;background:#F4F6F2;z-index:30;pointer-events:none}
+html.is-home .edge-bottom{background:#6A8F4C}
 html,body{margin:0;color:var(--ink);font-family:'Prompt',sans-serif;-webkit-font-smoothing:antialiased}
 button,input,select{font-family:inherit;font-size:15px;color:var(--ink)}
 button{cursor:pointer}
@@ -168,9 +167,9 @@ html.is-home #app{background:transparent}
 </style>
 </head>
 <body>
-<div class="edge-top" aria-hidden="true"></div>
 <div class="bgfix" aria-hidden="true"><svg class="hills" viewBox="0 0 1440 140" preserveAspectRatio="none" aria-hidden="true"><path d="M0 70 C240 10 420 110 720 60 C1000 15 1200 90 1440 40 L1440 140 L0 140Z" fill="#9DBA7A"/><path d="M0 100 C300 60 520 130 820 95 C1100 65 1250 120 1440 90 L1440 140 L0 140Z" fill="#7FA35E"/><path d="M0 125 C360 105 700 140 1040 118 C1220 108 1340 128 1440 122 L1440 140 L0 140Z" fill="#6A8F4C"/></svg></div>
 <main id="app"></main>
+<div class="edge-bottom" aria-hidden="true"></div>
 
 <script>
 /* ===== ข้อมูลตัวอย่าง (ภายหลังจะดึงจาก Google Sheets) ===== */
