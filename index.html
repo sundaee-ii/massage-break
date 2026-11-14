@@ -25,9 +25,9 @@
 /* Safari ใช้สีพื้นหลังทึบนี้ระบายใต้แถบเวลาและแถบที่อยู่เว็บ */
 /* Safari ระบายใต้แถบเวลาด้วยสีพื้นหลังนี้ */
 html,body{background-color:#A9CAE8;overscroll-behavior:none}
-/* แถบบางติดขอบล่าง: Safari ใช้สีนี้ระบายใต้แถบที่อยู่เว็บ */
-.edge-bottom{position:fixed;left:0;right:0;bottom:0;height:2px;background:#F4F6F2;z-index:30;pointer-events:none}
-html.is-home .edge-bottom{background:#6A8F4C}
+/* ซ่อนแถบเลื่อนด้านขวา (บนคอม) */
+html{scrollbar-width:none}
+html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
 html,body{margin:0;color:var(--ink);font-family:'Prompt',sans-serif;-webkit-font-smoothing:antialiased}
 button,input,select{font-family:inherit;font-size:15px;color:var(--ink)}
 button{cursor:pointer}
@@ -97,10 +97,8 @@ h1 em{font-weight:500;color:var(--accent)}
 /* home */
 .hero{position:relative;min-height:100vh;min-height:100lvh;display:flex;flex-direction:column}
 /* พื้นหลังหน้าแรก: ติดอยู่กับจอ เต็มจอตลอด เนื้อหาเลื่อนอยู่ด้านบน */
-.bgfix{display:none;position:fixed;left:0;right:0;top:0;height:100vh;height:100svh;z-index:0;pointer-events:none;background:linear-gradient(180deg,#9EC3E6 0%,#C9DDEE 38%,#E8EFE6 66%,#C9DBB2 86%,#B9CFA0 100%)}
+.bgfix{display:none;position:fixed;left:0;right:0;top:0;height:100vh;height:100lvh;z-index:0;pointer-events:none;background:linear-gradient(180deg,#9EC3E6 0%,#C9DDEE 38%,#E8EFE6 66%,#CFDDB8 86%,#C3D4A7 100%)}
 html.is-home .bgfix{display:block}
-/* เปิดจากหน้าจอโฮม (ไม่มีแถบ Safari) ให้พื้นหลังยาวถึงขอบล่างสุด */
-@media (display-mode: standalone){ .bgfix{height:100lvh} }
 #app{position:relative;z-index:1;background:var(--bg);min-height:100vh}
 html.is-home #app{background:transparent}
 .hero .wrap{position:relative;z-index:1;width:100%;flex:1;padding-top:calc(28px + var(--safe-top));padding-bottom:calc(150px + var(--safe-bottom));display:flex;flex-direction:column;gap:14px}
@@ -167,9 +165,8 @@ html.is-home #app{background:transparent}
 </style>
 </head>
 <body>
-<div class="bgfix" aria-hidden="true"><svg class="hills" viewBox="0 0 1440 140" preserveAspectRatio="none" aria-hidden="true"><path d="M0 70 C240 10 420 110 720 60 C1000 15 1200 90 1440 40 L1440 140 L0 140Z" fill="#9DBA7A"/><path d="M0 100 C300 60 520 130 820 95 C1100 65 1250 120 1440 90 L1440 140 L0 140Z" fill="#7FA35E"/><path d="M0 125 C360 105 700 140 1040 118 C1220 108 1340 128 1440 122 L1440 140 L0 140Z" fill="#6A8F4C"/></svg></div>
+<div class="bgfix" aria-hidden="true"><svg class="hills" viewBox="0 0 1440 140" preserveAspectRatio="none" aria-hidden="true"><path d="M0 70 C240 10 420 110 720 60 C1000 15 1200 90 1440 40 L1440 140 L0 140Z" fill="#9DBA7A"/><path d="M0 100 C300 60 520 130 820 95 C1100 65 1250 120 1440 90 L1440 140 L0 140Z" fill="#7FA35E"/><path d="M0 112 C360 92 700 128 1040 104 C1220 94 1340 114 1440 108 L1440 140 L0 140Z" fill="#C3D4A7"/></svg></div>
 <main id="app"></main>
-<div class="edge-bottom" aria-hidden="true"></div>
 
 <script>
 /* ===== ข้อมูลตัวอย่าง (ภายหลังจะดึงจาก Google Sheets) ===== */
