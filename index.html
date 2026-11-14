@@ -23,7 +23,7 @@
 }
 *{box-sizing:border-box}
 /* Safari ใช้สีพื้นหลังทึบนี้ระบายใต้แถบเวลาและแถบที่อยู่เว็บ */
-html,body{background-color:#A9CAE8}
+html,body{background-color:#A9CAE8;overscroll-behavior:none}
 html,body{margin:0;color:var(--ink);font-family:'Prompt',sans-serif;-webkit-font-smoothing:antialiased}
 button,input,select{font-family:inherit;font-size:15px;color:var(--ink)}
 button{cursor:pointer}
@@ -46,7 +46,7 @@ h1 em{font-weight:500;color:var(--accent)}
 .seg{display:inline-flex;padding:4px;border-radius:999px;background:#EEF1EC;gap:2px}
 .seg button{height:34px;padding:0 14px;border-radius:999px;border:0;background:transparent;font-size:13px;color:#4A5A4E}
 .seg button[aria-pressed=true]{background:#fff;color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.06)}
-.cardhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.cardhead{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px}
 .cardhead h2{margin:0}
 .grid-r{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .rbtn{height:46px;border-radius:14px;border:1px solid var(--line);background:#fff;font-size:14px}
@@ -91,11 +91,16 @@ h1 em{font-weight:500;color:var(--accent)}
 .dialog .row{display:flex;gap:10px}
 .dialog .row>*{flex:1}
 /* home */
-.hero{position:relative;overflow:hidden;background:linear-gradient(180deg,#9EC3E6 0%,#C9DDEE 38%,#E8EFE6 66%,#C9DBB2 86%,#B9CFA0 100%);min-height:100vh;min-height:100lvh;display:flex;flex-direction:column}
+.hero{position:relative;min-height:100vh;min-height:100lvh;display:flex;flex-direction:column}
+/* พื้นหลังหน้าแรก: ติดอยู่กับจอ เต็มจอตลอด เนื้อหาเลื่อนอยู่ด้านบน */
+.bgfix{display:none;position:fixed;left:0;right:0;top:0;height:100vh;height:100lvh;z-index:0;pointer-events:none;background:linear-gradient(180deg,#9EC3E6 0%,#C9DDEE 38%,#E8EFE6 66%,#C9DBB2 86%,#B9CFA0 100%)}
+body.is-home .bgfix{display:block}
+#app{position:relative;z-index:1;background:var(--bg);min-height:100vh}
+body.is-home #app{background:transparent}
 .hero .wrap{position:relative;z-index:1;width:100%;flex:1;padding-top:calc(28px + var(--safe-top));padding-bottom:calc(150px + var(--safe-bottom));display:flex;flex-direction:column;gap:14px}
 .hero h1{font-size:44px;line-height:1.05}
 .hero p{margin:0;font-size:15px;color:#2B3A2F;max-width:520px;line-height:1.55}
-.hills{position:absolute;left:0;right:0;bottom:0;width:100%;height:calc(140px + var(--safe-bottom));pointer-events:none}
+.hills{position:absolute;left:0;right:0;bottom:0;width:100%;height:calc(140px + var(--safe-bottom))}
 .glass{background:rgba(255,255,255,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.7);border-radius:24px;padding:16px}
 .stat{display:flex;align-items:baseline;gap:8px}
 .stat b{font-size:28px;font-weight:600}
@@ -152,10 +157,12 @@ h1 em{font-weight:500;color:var(--accent)}
   .bar.mobile-only{display:none}
 }
 @media (max-width:899px){ .side.desktop-only{display:none} }
+@media (max-width:380px){ h1{font-size:25px} .hero h1{font-size:38px} .seg button{padding:0 10px} .cardhead h2{white-space:nowrap;font-size:15px} .grid-r{gap:6px} .bar .primary{padding:0 4px 0 14px;font-size:14px;gap:8px} .primary .arr{width:36px;height:36px} .sum{font-size:12px} .sum b{font-size:14px} }
 </style>
 </head>
 <body>
-<main id="app" style="background:var(--bg);min-height:100vh"></main>
+<div class="bgfix" aria-hidden="true"><svg class="hills" viewBox="0 0 1440 140" preserveAspectRatio="none" aria-hidden="true"><path d="M0 70 C240 10 420 110 720 60 C1000 15 1200 90 1440 40 L1440 140 L0 140Z" fill="#9DBA7A"/><path d="M0 100 C300 60 520 130 820 95 C1100 65 1250 120 1440 90 L1440 140 L0 140Z" fill="#7FA35E"/><path d="M0 125 C360 105 700 140 1040 118 C1220 108 1340 128 1440 122 L1440 140 L0 140Z" fill="#6A8F4C"/></svg></div>
+<main id="app"></main>
 
 <script>
 /* ===== ข้อมูลตัวอย่าง (ภายหลังจะดึงจาก Google Sheets) ===== */
@@ -201,7 +208,6 @@ function home(){
       <div class="rule"><span class="n">03</span><div><b>แสดงบัตรคิวหน้างาน</b><span>แจ้งชื่อกับเจ้าหน้าที่</span></div></div>
     </div>
   </div>
-  <svg class="hills" viewBox="0 0 1440 140" preserveAspectRatio="none" aria-hidden="true"><path d="M0 70 C240 10 420 110 720 60 C1000 15 1200 90 1440 40 L1440 140 L0 140Z" fill="#9DBA7A"/><path d="M0 100 C300 60 520 130 820 95 C1100 65 1250 120 1440 90 L1440 140 L0 140Z" fill="#7FA35E"/><path d="M0 125 C360 105 700 140 1040 118 C1220 108 1340 128 1440 122 L1440 140 L0 140Z" fill="#6A8F4C"/></svg>
   </section>`;
 }
 
@@ -302,6 +308,7 @@ let lastScreen = null;
 function render(){
   const s = { home, booking, form, ticket, lookup }[state.screen]();
   const changed = state.screen !== lastScreen; lastScreen = state.screen;
+  document.body.classList.toggle('is-home', state.screen === 'home');
   document.getElementById('app').innerHTML = `<div class="${changed?'enter':''}">${s}</div>` + popupHtml();
   state.flash = null;
 }
