@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#9EC3E6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Massage Break">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-512.png">
+<title>Massage Break</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+/* พื้นที่ใต้แถบเวลาและขอบล่างของ iPhone เมื่อเปิดแบบเต็มจอ */
+:root{--safe-top:max(env(safe-area-inset-top),0px);--safe-bottom:max(env(safe-area-inset-bottom),0px)}
+:root{
+  --accent:#2E4334; --ink:#1C1C1C; --bg:#F4F6F2; --muted:#5F6B62; --line:#E1E6DF; --card:#FFFFFF;
+  --danger:#B42318; --male-bg:#DCEBFA; --male:#1F4E79; --female-bg:#FBE1EB; --female:#8A2350;
+}
+*{box-sizing:border-box}
+html{background:linear-gradient(180deg,#A9CAE8 0 50%,#F4F6F2 50% 100%)}
+html,body{margin:0;color:var(--ink);font-family:'Prompt',sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select{font-family:inherit;font-size:15px;color:var(--ink)}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed}
+:focus-visible{outline:3px solid #7FA35E;outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+.sky{background:linear-gradient(180deg,#A9CAE8 0%,#DCE8EF 100%)}
+.top{padding-top:calc(18px + var(--safe-top));padding-bottom:18px;display:flex;flex-direction:column;gap:12px}
+.toprow{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pillbtn{display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 16px 0 12px;border-radius:999px;border:0;background:rgba(255,255,255,.75);font-size:13px;font-weight:500}
+.step{font-size:12px;font-weight:500;color:#2B3A2F}
+h1{margin:0;font-size:30px;font-weight:600;letter-spacing:-.01em;line-height:1.15}
+h1 em{font-weight:500;color:var(--accent)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.75);font-size:12px;font-weight:500}
+.body{padding-top:18px;padding-bottom:calc(120px + var(--safe-bottom));display:flex;flex-direction:column;gap:14px}
+.card{background:var(--card);border-radius:24px;padding:18px}
+.card h2{margin:0 0 12px;font-size:16px;font-weight:600}
+.label{font-size:12px;color:var(--muted);margin:2px 0 8px}
+.seg{display:inline-flex;padding:4px;border-radius:999px;background:#EEF1EC;gap:2px}
+.seg button{height:34px;padding:0 14px;border-radius:999px;border:0;background:transparent;font-size:13px;color:#4A5A4E}
+.seg button[aria-pressed=true]{background:#fff;color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.cardhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.cardhead h2{margin:0}
+.grid-r{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.rbtn{height:46px;border-radius:14px;border:1px solid var(--line);background:#fff;font-size:14px}
+.rbtn[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:600}
+.rbtn:disabled{background:#F4F5F3;color:#9AA39C;text-decoration:line-through}
+.rbtn small{display:block;font-size:10px;color:inherit;opacity:.75;text-decoration:none}
+.grid-m{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.mbtn{min-height:64px;border-radius:16px;border:1px solid var(--line);background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px 4px}
+.mbtn b{font-size:14px;font-weight:600}
+.mbtn[aria-pressed=true]{border:2px solid var(--accent);background:#EEF3EC}
+.mbtn.booked{background:#F4F5F3;color:#8A948C}
+.mbtn.booked b{text-decoration:line-through;font-weight:500}
+.mbtn.off{background:repeating-linear-gradient(135deg,#E4E8E1 0 4px,#F4F6F2 4px 8px);color:#8A948C}
+.mbtn.off b{font-weight:500}
+.mbtn span.s{font-size:11px}
+.g{padding:1px 8px;border-radius:999px;font-size:11px;font-weight:600;line-height:17px}
+.g.m{background:var(--male-bg);color:var(--male)}
+.g.f{background:var(--female-bg);color:var(--female)}
+.hint{font-size:12px;color:var(--muted);line-height:1.5}
+.bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #E6EAE4;z-index:5}
+.bar .wrap{display:flex;gap:10px;align-items:center;padding-top:12px;padding-bottom:calc(18px + var(--safe-bottom))}
+.sum{flex:1;min-width:0;font-size:13px;line-height:1.35}
+.sum b{display:block;font-size:15px}
+.primary{display:inline-flex;align-items:center;justify-content:space-between;gap:12px;height:52px;padding:0 6px 0 20px;border-radius:999px;border:0;background:var(--ink);color:#fff;font-size:15px;font-weight:500;text-decoration:none;white-space:nowrap}
+.primary .arr{width:40px;height:40px;border-radius:999px;background:#fff;color:var(--ink);display:flex;align-items:center;justify-content:center}
+.primary:disabled{background:#C9CFC8;color:#fff}
+.primary.full{width:100%}
+.ghost{display:inline-flex;align-items:center;justify-content:center;height:52px;padding:0 18px;border-radius:999px;border:1px solid rgba(28,28,28,.25);background:#fff;font-size:14px;font-weight:500}
+.danger{height:50px;border-radius:999px;border:1px solid var(--danger);background:#fff;color:var(--danger);font-weight:600}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:13px;font-weight:600}
+.field input,.field select{height:50px;padding:0 14px;border-radius:14px;border:1px solid #D5DCD2;background:#fff;min-width:0;width:100%}
+.field.err input,.field.err select{border:2px solid var(--danger)}
+.field .msg{font-size:12px;color:var(--danger);font-weight:500}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.note{padding:12px 14px;border-radius:18px;background:#EEF3EC;font-size:12px;line-height:1.5;color:#2B3A2F}
+.overlay{position:fixed;inset:0;background:rgba(20,28,22,.45);display:flex;align-items:center;justify-content:center;padding:24px;z-index:10}
+.dialog{width:100%;max-width:400px;background:#fff;border-radius:28px;padding:24px;display:flex;flex-direction:column;gap:12px}
+.dialog .ic{width:40px;height:40px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;background:#F8C66B}
+.dialog h3{margin:0;font-size:20px;font-weight:600}
+.dialog p{margin:0;font-size:14px;line-height:1.55;color:#3D4F42}
+.dialog .row{display:flex;gap:10px}
+.dialog .row>*{flex:1}
+/* home */
+.hero{position:relative;overflow:hidden;background:linear-gradient(180deg,#9EC3E6 0%,#C9DDEE 38%,#E8EFE6 66%,#C9DBB2 86%,#B9CFA0 100%);min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+.hero .wrap{position:relative;z-index:1;width:100%;flex:1;padding-top:calc(28px + var(--safe-top));padding-bottom:calc(150px + var(--safe-bottom));display:flex;flex-direction:column;gap:14px}
+.hero h1{font-size:44px;line-height:1.05}
+.hero p{margin:0;font-size:15px;color:#2B3A2F;max-width:520px;line-height:1.55}
+.hills{position:absolute;left:0;right:0;bottom:0;width:100%;height:calc(140px + var(--safe-bottom));pointer-events:none}
+.glass{background:rgba(255,255,255,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.7);border-radius:24px;padding:16px}
+.stat{display:flex;align-items:baseline;gap:8px}
+.stat b{font-size:28px;font-weight:600}
+.actions{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.rules{display:grid;grid-template-columns:1fr;gap:10px;margin-top:6px}
+.rule{background:rgba(255,255,255,.7);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.75);border-radius:22px;padding:16px;display:flex;gap:14px;align-items:flex-start}
+.rule .n{font-size:13px;font-weight:700;color:var(--accent);min-width:24px}
+.rule b{display:block;font-size:15px;font-weight:600;margin-bottom:2px}
+.rule span{font-size:13px;color:#4A5A4E;line-height:1.5}
+/* ticket */
+.ticket{background:var(--accent);color:#fff;border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:16px}
+.ticket .id{font-size:40px;font-weight:700;letter-spacing:.04em}
+.ticket .kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.kv span{display:block;font-size:11px;opacity:.75}
+.kv b{font-size:16px;font-weight:600}
+.ok{padding:20px;border-radius:24px;background:#E3EEDC}
+.hidden{display:none!important}
+/* motion */
+.enter{animation:screenIn .32s cubic-bezier(.2,.8,.2,1)}
+@keyframes screenIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.primary,.ghost,.danger,.pillbtn,.rbtn,.mbtn,.seg button{transition:background-color .18s ease,color .18s ease,border-color .18s ease,box-shadow .18s ease,transform .12s ease}
+.primary:not(:disabled):active,.ghost:active,.danger:not(:disabled):active,.pillbtn:active,.rbtn:not(:disabled):active,.mbtn:not(:disabled):active,.seg button:active{transform:scale(.97)}
+@media (hover:hover){
+  .primary:not(:disabled):hover{background:#33373A}
+  .ghost:hover,.pillbtn:hover{background:#F4F6F2}
+  .rbtn:not(:disabled):not([aria-pressed=true]):hover,.mbtn:not(:disabled):not([aria-pressed=true]):hover{border-color:#9AA59C;box-shadow:0 2px 8px rgba(28,28,28,.06)}
+  .danger:not(:disabled):hover{background:#FDECEA}
+}
+.primary .arr{transition:transform .18s ease}
+.primary:not(:disabled):hover .arr{transform:translateX(3px)}
+.pop{animation:pop .24s ease-out}
+@keyframes pop{0%{transform:scale(.94)}60%{transform:scale(1.03)}100%{transform:scale(1)}}
+.reveal{animation:screenIn .28s ease-out}
+.overlay{animation:fade .2s ease-out}
+.overlay .dialog{animation:rise .26s cubic-bezier(.2,.8,.2,1)}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+@media (min-width:900px){
+  .top{padding-top:calc(26px + var(--safe-top));padding-bottom:26px}
+  h1{font-size:40px}
+  .hero h1{font-size:64px}
+  .hero .wrap{padding-top:48px;padding-bottom:170px}
+  .actions{flex-direction:row;max-width:620px}
+  .rules{margin-top:auto}
+  .actions>*{flex:1}
+  .rules{grid-template-columns:repeat(3,1fr)}
+  .split{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px;align-items:start}
+  .split .side{position:sticky;top:18px}
+  .grid-r{grid-template-columns:repeat(7,minmax(0,1fr))}
+  .grid-m{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .narrow{max-width:560px}
+  .bar.mobile-only{display:none}
+}
+@media (max-width:899px){ .side.desktop-only{display:none} }
+</style>
+</head>
+<body>
+<main id="app" style="background:var(--bg);min-height:100vh"></main>
+
+<script>
+/* ===== ข้อมูลตัวอย่าง (ภายหลังจะดึงจาก Google Sheets) ===== */
+const EVENT = { dateText: 'ศุกร์ 18 ธ.ค. 2569', short: 'ศ. 18 ธ.ค.' };
+const ROUNDS = [['11.00','11.15'],['11.20','11.35'],['11.40','11.55'],['12.00','12.15'],['12.20','12.35'],['12.40','12.55'],
+  ['13.20','13.35'],['13.40','13.55'],['14.00','14.15'],['14.20','14.35'],['14.40','14.55'],['15.00','15.15'],['15.20','15.35'],['15.40','15.55']];
+const GENDERS = 'ชญชชชญชชชญชชชญชชชชชชชญญชชญชช'.split('');
+const DEPTS = ['Executive Department','BU 1','BU 2','BU 3','BU 4','Customer Service','E-Commerce','Financial & Account','Human Resource','IT','Logistics Management','อื่น ๆ'];
+const CODES = ['EX','B1','B2','B3','B4','CS','EC','FA','HR','IT','LM','OT'];
+const OFF_MASSEURS = [5,12,19]; // ไม่เปิดรับรอบ 11.00–13.40
+// สุ่มช่องที่ถูกจองแบบคงที่ (ให้หน้าตาดูสมจริง)
+const BOOKED = {};
+(function(){ let x = 7; ROUNDS.forEach((r,ri)=>{ for(let m=1;m<=28;m++){ x=(x*9301+49297)%233280; const p = ri<3?0.85:ri<8?0.6:0.45; if(x/233280<p) BOOKED[ri+'|'+m]=true; } }); [0,5].forEach(ri=>{ for(let m=1;m<=28;m++) BOOKED[ri+'|'+m]=true; }); })();
+function slotState(ri,m){ if(state.mine && state.mine.ri===ri && state.mine.m===m) return 'mine'; if(OFF_MASSEURS.includes(m) && ri<=7) return 'off'; if(BOOKED[ri+'|'+m]) return 'booked'; return 'free'; }
+function freeCount(ri){ let n=0; for(let m=1;m<=28;m++) if(slotState(ri,m)==='free') n++; return n; }
+function totalFree(){ let n=0; ROUNDS.forEach((_,ri)=>n+=freeCount(ri)); return n; }
+
+/* ===== state ===== */
+const state = { screen:'home', part:'all', gender:'all', ri:null, m:null, form:{emp:'',first:'',nick:'',dept:''}, errors:{}, popup:null, mine:null, changing:false, lookup:{emp:'',found:null,bid:'',fails:0,msg:''} };
+function go(screen){ state.screen=screen; state.popup=null; render(); window.scrollTo(0,0); }
+function g(m){ return GENDERS[m-1]==='ญ' ? '<span class="g f">หญิง</span>' : '<span class="g m">ชาย</span>'; }
+function gText(m){ return GENDERS[m-1]==='ญ'?'หญิง':'ชาย'; }
+const ARROW = '<span class="arr" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>';
+const BACK = '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>';
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function header(back,backLabel,step,title,extra){ return `<div class="sky"><div class="wrap top"><div class="toprow"><button class="pillbtn" data-go="${back}">${BACK}${backLabel}</button>${step?`<span class="step">${step}</span>`:''}</div><h1>${title}</h1>${extra||''}</div></div>`; }
+
+/* ===== screens ===== */
+function home(){
+  const free = totalFree();
+  return `<section class="hero"><div class="wrap">
+    <span class="chip" style="align-self:flex-start">HR-OD · ${EVENT.dateText}</span>
+    <h1>Massage<br><em>Break</em></h1>
+    <p>พักสักครู่ แล้วรับการนวดผ่อนคลาย 15 นาที จองคิวล่วงหน้าได้ 1 คิวต่อคน</p>
+    <div class="glass stat" style="align-self:flex-start"><b>${free}</b><span>คิวว่าง จาก 392 คิว · 11.00–15.55 น.</span></div>
+    <div class="actions">
+      <button class="primary" data-go="booking">จองคิวนวด${ARROW}</button>
+      <button class="ghost" data-go="lookup">ตรวจสอบคิวของฉัน</button>
+    </div>
+    <div class="rules">
+      <div class="rule"><span class="n">01</span><div><b>1 คน จองได้ 1 คิว</b><span>ระบบตรวจจากรหัสพนักงาน</span></div></div>
+      <div class="rule"><span class="n">02</span><div><b>มาก่อนเวลา 5 นาที</b><span>ถ้ามาสายเกิน 5 นาที คิวจะถูกยกเลิกอัตโนมัติ</span></div></div>
+      <div class="rule"><span class="n">03</span><div><b>แสดงบัตรคิวหน้างาน</b><span>แจ้งชื่อกับเจ้าหน้าที่</span></div></div>
+    </div>
+  </div>
+  <svg class="hills" viewBox="0 0 1440 140" preserveAspectRatio="none" aria-hidden="true"><path d="M0 70 C240 10 420 110 720 60 C1000 15 1200 90 1440 40 L1440 140 L0 140Z" fill="#9DBA7A"/><path d="M0 100 C300 60 520 130 820 95 C1100 65 1250 120 1440 90 L1440 140 L0 140Z" fill="#7FA35E"/><path d="M0 125 C360 105 700 140 1040 118 C1220 108 1340 128 1440 122 L1440 140 L0 140Z" fill="#6A8F4C"/></svg>
+  </section>`;
+}
+
+function booking(){
+  const parts = { all:[...ROUNDS.keys()], am:[0,1,2,3,4,5], pm:[6,7,8,9,10,11,12,13] };
+  const rbtn = ri => { const n=freeCount(ri); const full = n===0; return `<button class="rbtn ${state.flash==='ri'+ri?'pop':''}" data-ri="${ri}" aria-pressed="${state.ri===ri}" ${full?'disabled':''}>${ROUNDS[ri][0]}<small>${full?'เต็ม':'ว่าง '+n}</small></button>`; };
+  const showAm = state.part!=='pm', showPm = state.part!=='am';
+  let masseurs = '';
+  if(state.ri!==null){
+    const list = [];
+    for(let m=1;m<=28;m++){
+      if(state.gender==='m' && GENDERS[m-1]!=='ช') continue;
+      if(state.gender==='f' && GENDERS[m-1]!=='ญ') continue;
+      const st = slotState(state.ri,m);
+      if(st==='free'||st==='mine'){
+        list.push(`<button class="mbtn ${state.flash==='m'+m?'pop':''}" data-m="${m}" aria-pressed="${state.m===m}"><b>คนที่ ${m}</b>${g(m)}</button>`);
+      } else if(st==='booked'){
+        list.push(`<button class="mbtn booked" disabled aria-label="หมอนวดคนที่ ${m} ไม่ว่าง"><b>คนที่ ${m}</b><span class="s">ไม่ว่าง</span></button>`);
+      } else {
+        list.push(`<button class="mbtn off" disabled aria-label="หมอนวดคนที่ ${m} ไม่เปิดรับรอบนี้"><b>คนที่ ${m}</b><span class="s">ไม่เปิดรับ</span></button>`);
+      }
+    }
+    masseurs = `<div class="card ${state.flash&&state.flash.startsWith('ri')?'reveal':''}" id="masseurs"><div class="cardhead"><h2>หมอนวด · รอบ ${ROUNDS[state.ri][0]} น.</h2>
+      <div class="seg" role="group" aria-label="กรองเพศ"><button data-gender="all" aria-pressed="${state.gender==='all'}">ทั้งหมด</button><button data-gender="m" aria-pressed="${state.gender==='m'}">ชาย</button><button data-gender="f" aria-pressed="${state.gender==='f'}">หญิง</button></div></div>
+      <div class="grid-m">${list.join('')}</div></div>`;
+  } else {
+    masseurs = `<div class="card"><h2>หมอนวด</h2><p class="hint" style="margin:0">เลือกรอบเวลาก่อน แล้วจะแสดงหมอนวดที่ว่างในรอบนั้น</p></div>`;
+  }
+  const ready = state.ri!==null && state.m!==null;
+  const sumText = ready ? `<b>${ROUNDS[state.ri][0]}–${ROUNDS[state.ri][1]} · คนที่ ${state.m}</b>หมอนวด${gText(state.m)}` : (state.ri!==null?`<b>รอบ ${ROUNDS[state.ri][0]}</b>เลือกหมอนวด`:'<b>ยังไม่ได้เลือก</b>เลือกรอบและหมอนวด');
+  const nextLabel = state.changing ? 'ยืนยันเปลี่ยนคิว' : 'กรอกข้อมูล';
+  return header(state.changing?'lookup':'home', state.changing?'คิวของฉัน':'หน้าแรก', state.changing?'เปลี่ยนคิว':'ขั้นที่ 1 จาก 3', state.changing?'เปลี่ยน<em>คิว</em>':'เลือก<em>รอบ</em>และหมอนวด', `<div class="chips"><span class="chip">${EVENT.dateText}</span><span class="chip">รอบละ 15 นาที</span>${state.changing&&state.mine?`<span class="chip">คิวเดิม ${ROUNDS[state.mine.ri][0]} · คนที่ ${state.mine.m}</span>`:''}</div>`)
+  + `<div class="wrap body"><div class="split"><div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card"><div class="cardhead"><h2>ช่วงเวลา</h2><div class="seg" role="group" aria-label="ช่วงเวลา"><button data-part="all" aria-pressed="${state.part==='all'}">ทั้งหมด</button><button data-part="am" aria-pressed="${state.part==='am'}">เช้า</button><button data-part="pm" aria-pressed="${state.part==='pm'}">บ่าย</button></div></div>
+        ${showAm?`<div class="label">รอบเช้า</div><div class="grid-r">${parts.am.map(rbtn).join('')}</div>`:''}
+        ${showPm?`<div class="label" style="margin-top:12px">รอบบ่าย</div><div class="grid-r">${parts.pm.map(rbtn).join('')}</div>`:''}
+      </div>
+      ${masseurs}
+    </div>
+    <aside class="side desktop-only"><div class="card"><h2>สรุปการเลือก</h2><div class="sum" style="margin-bottom:14px">${sumText}</div><button class="primary full" data-next ${ready?'':'disabled'}>${nextLabel}${ARROW}</button></div></aside>
+  </div></div>
+  <div class="bar mobile-only"><div class="wrap"><div class="sum">${sumText}</div><button class="primary" data-next ${ready?'':'disabled'}>${nextLabel}${ARROW}</button></div></div>`;
+}
+
+function form(){
+  const f = state.form, e = state.errors;
+  const fld = (id,label,inner) => `<div class="field ${e[id]?'err':''}"><label for="f-${id}">${label}</label>${inner}${e[id]?`<span class="msg">${e[id]}</span>`:''}</div>`;
+  return header('booking','เปลี่ยนคิว','ขั้นที่ 2 จาก 3','กรอก<em>ข้อมูล</em>', `<div class="chips"><span class="chip">${EVENT.short}</span><span class="chip">${ROUNDS[state.ri][0]}–${ROUNDS[state.ri][1]}</span><span class="chip">หมอนวดคนที่ ${state.m} (${gText(state.m)})</span></div>`)
+  + `<div class="wrap body narrow"><div class="card" style="display:flex;flex-direction:column;gap:14px">
+      ${fld('emp','รหัสพนักงาน',`<input id="f-emp" inputmode="numeric" maxlength="8" autocomplete="off" value="${esc(f.emp)}" placeholder="ตัวเลข 8 หลัก">`)}
+      <div class="two">${fld('first','ชื่อจริง',`<input id="f-first" value="${esc(f.first)}">`)}${fld('nick','ชื่อเล่น',`<input id="f-nick" value="${esc(f.nick)}">`)}</div>
+      ${fld('dept','ฝ่าย',`<select id="f-dept"><option value="">เลือกฝ่าย</option>${DEPTS.map((d,i)=>`<option value="${i}" ${String(f.dept)===String(i)?'selected':''}>${esc(d)}</option>`).join('')}</select>`)}
+    </div>
+    <div class="note">ระบบจะตรวจรหัสพนักงาน และให้จองได้ 1 คิวต่อคน · หลังจองจะได้รหัสการจอง (Booking ID) ไว้แสดงหน้างานและใช้ยกเลิกคิว<br><b>ลองทดสอบ:</b> รหัส 66000001 = มีคิวแล้ว · 66000002 = คิวถูกจองตัดหน้า</div>
+  </div>
+  <div class="bar"><div class="wrap narrow" style="padding-left:20px;padding-right:20px"><button class="ghost" data-go="booking" style="flex:1">ย้อนกลับ</button><button class="primary" data-confirm style="flex:1.6">ยืนยันการจอง${ARROW}</button></div></div>`;
+}
+
+function ticket(){
+  const t = state.mine;
+  return header('home','หน้าแรก',state.changedNote?'':'ขั้นที่ 3 จาก 3','จอง<em>สำเร็จ</em>', `<span class="step">${state.changedNote||'แคปหน้าจอนี้ไว้ แสดงกับเจ้าหน้าที่หน้างาน'}</span>`)
+  + `<div class="wrap body narrow"><div class="ticket" role="region" aria-label="บัตรคิว">
+      <div><span style="font-size:12px;opacity:.75">รหัสการจอง (Booking ID)</span><div class="id">${t.id}</div></div>
+      <div class="kv"><div><span>วันที่</span><b>${EVENT.short}</b></div><div><span>เวลา</span><b>${ROUNDS[t.ri][0]}–${ROUNDS[t.ri][1]}</b></div>
+      <div><span>หมอนวด</span><b>คนที่ ${t.m} (${gText(t.m)})</b></div><div><span>ผู้รับบริการ</span><b>${esc(t.first)} (${esc(t.nick)})</b></div></div>
+    </div>
+    <div class="note">มาก่อนเวลา 5 นาที · ถ้าสายเกิน 5 นาที คิวจะถูกยกเลิกอัตโนมัติ · ใช้รหัสการจองนี้เพื่อเปลี่ยนหรือยกเลิกคิว</div>
+    <button class="ghost" data-go="home">กลับหน้าแรก</button>
+  </div>`;
+}
+
+function lookup(){
+  const L = state.lookup;
+  let result = '';
+  if(L.found===false) result = `<div class="card"><h2>ไม่พบคิวของรหัสนี้</h2><p class="hint" style="margin:0 0 12px">ตรวจรหัสพนักงานอีกครั้ง หรือจองคิวใหม่ได้</p><button class="primary" data-go="booking">ไปจองคิว${ARROW}</button></div>`;
+  if(L.found==='cancelled') result = `<div class="ok"><h2 style="margin:0 0 6px;font-size:17px">ยกเลิกคิวเรียบร้อย</h2><p class="hint" style="margin:0 0 12px;color:#2B3A2F">คิวถูกคืนให้ผู้อื่นจองได้แล้ว</p><button class="primary" data-go="booking">จองคิวใหม่${ARROW}</button></div>`;
+  if(L.found===true){
+    const t = state.mine, locked = L.fails>=5;
+    result = `<div class="card" style="display:flex;flex-direction:column;gap:12px">
+      <div class="cardhead" style="margin:0"><span class="hint" style="font-weight:600">พบ 1 คิว</span><span class="chip" style="background:#EEF3EC;color:var(--accent)">จองแล้ว</span></div>
+      <div class="kv" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px"><div><span class="hint">เวลา</span><br><b>${ROUNDS[t.ri][0]}–${ROUNDS[t.ri][1]}</b></div><div><span class="hint">หมอนวด</span><br><b>คนที่ ${t.m} (${gText(t.m)})</b></div><div><span class="hint">ผู้รับบริการ</span><br><b>${esc(t.first)} (${esc(t.nick)})</b></div><div><span class="hint">รหัสการจอง</span><br><b>${t.id.slice(0,5)}••</b></div></div>
+      <div style="height:1px;background:#E6EAE4"></div>
+      <div class="field ${L.msg?'err':''}"><label for="l-bid">เปลี่ยนหรือยกเลิกคิว · กรอกรหัสการจองเต็ม</label><input id="l-bid" value="${esc(L.bid)}" placeholder="เช่น ${t.id.slice(0,3)}1234" ${locked?'disabled':''}><span class="${L.msg?'msg':'hint'}">${L.msg||'กรอกผิดได้ไม่เกิน 5 ครั้ง'}</span></div>
+      <div style="display:flex;gap:8px"><button class="primary" data-change style="flex:1.3;justify-content:center;padding:0 16px" ${locked?'disabled':''}>เปลี่ยนคิว</button><button class="danger" data-cancel style="flex:1" ${locked?'disabled':''}>ยกเลิกคิว</button></div>
+      <span class="hint">ลืมรหัสการจอง? แจ้งเจ้าหน้าที่ HR-OD ให้เปลี่ยนหรือยกเลิกแทนได้</span></div>`;
+  }
+  return header('home','หน้าแรก','','คิว<em>ของฉัน</em>','<span class="step">ตรวจสอบด้วยรหัสพนักงาน · เปลี่ยน/ยกเลิกด้วยรหัสการจอง</span>')
+  + `<div class="wrap body narrow"><div class="card"><div class="field"><label for="l-emp">รหัสพนักงาน</label><div style="display:flex;gap:8px"><input id="l-emp" inputmode="numeric" maxlength="8" value="${esc(L.emp)}" placeholder="ตัวเลข 8 หลัก" style="flex:1"><button class="primary" data-search style="padding:0 18px;height:50px;border-radius:14px">ค้นหา</button></div></div>${state.mine?'':'<p class="hint" style="margin:10px 0 0">ตัวอย่าง: จองคิวก่อน แล้วกลับมาค้นด้วยรหัสพนักงานที่ใช้จอง</p>'}</div>${result}</div>`;
+}
+
+function popupHtml(){
+  if(!state.popup) return '';
+  const p = state.popup;
+  return `<div class="overlay"><div class="dialog" role="alertdialog" aria-labelledby="dlg-t"><span class="ic" style="${p.icon||''}">!</span><h3 id="dlg-t">${p.title}</h3><p>${p.body}</p><div class="row"><button class="ghost" data-close>ปิด</button>${p.action?`<button class="primary" data-go="${p.go}" style="justify-content:center;padding:0 16px">${p.action}</button>`:''}</div></div></div>`;
+}
+
+let lastScreen = null;
+function render(){
+  const s = { home, booking, form, ticket, lookup }[state.screen]();
+  const changed = state.screen !== lastScreen; lastScreen = state.screen;
+  document.getElementById('app').innerHTML = `<div class="${changed?'enter':''}">${s}</div>` + popupHtml();
+  state.flash = null;
+}
+
+/* ===== actions ===== */
+function newId(deptIdx){ return CODES[deptIdx] + '-' + String(Math.floor(1000 + Math.random()*9000)); }
+function readForm(){ const v=id=>document.getElementById(id); if(!v('f-emp')) return; state.form={ emp:v('f-emp').value.trim(), first:v('f-first').value.trim(), nick:v('f-nick').value.trim(), dept:v('f-dept').value }; }
+function confirmBooking(){
+  readForm();
+  const f = state.form, e = {};
+  if(!/^\d{8}$/.test(f.emp)) e.emp = 'รหัสพนักงานต้องเป็นตัวเลข 8 หลัก';
+  if(!f.first) e.first = 'กรุณากรอกชื่อจริง';
+  if(!f.nick) e.nick = 'กรุณากรอกชื่อเล่น';
+  if(f.dept==='') e.dept = 'กรุณาเลือกฝ่าย';
+  state.errors = e;
+  if(Object.keys(e).length){ render(); return; }
+  if(f.emp==='66000001' || (state.mine && state.mine.emp===f.emp)){ state.errors={emp:'รหัสนี้มีคิวในวันนี้แล้ว · 1 คน จองได้ 1 คิว'}; state.popup={title:'รหัสนี้มีคิวแล้ว',body:'รหัสพนักงานนี้จองคิวในวันนี้ไว้แล้ว 1 คิว หากต้องการเปลี่ยนคิว ไปที่ "คิวของฉัน"',action:'ดูคิวของฉัน',go:'lookup',icon:'background:#F6D2CF;color:#B42318'}; render(); return; }
+  if(f.emp==='66000002'){ state.popup={title:'คิวนี้ถูกจองไปแล้ว',body:'มีผู้ยืนยันคิวนี้ก่อนคุณไม่กี่วินาที กรุณาเลือกรอบหรือหมอนวดคนอื่น ข้อมูลที่กรอกไว้จะยังอยู่',action:'เลือกคิวใหม่',go:'booking'}; state.form.emp=''; render(); return; }
+  state.mine = { id:newId(Number(f.dept)), ri:state.ri, m:state.m, emp:f.emp, first:f.first, nick:f.nick };
+  state.changedNote = ''; state.lookup = {emp:'',found:null,bid:'',fails:0,msg:''};
+  go('ticket');
+}
+
+document.addEventListener('click', ev => {
+  const t = ev.target.closest('button'); if(!t) return;
+  const d = t.dataset;
+  if(state.screen==='form') readForm();
+  if(d.go!==undefined){ if(d.go==='booking' && state.screen!=='form') { state.changing = state.screen==='lookup' ? false : state.changing; } go(d.go); return; }
+  if(d.close!==undefined){ state.popup=null; render(); return; }
+  if(d.part){ state.part=d.part; render(); return; }
+  if(d.gender){ state.gender=d.gender; render(); return; }
+  if(d.ri!==undefined){ state.ri=Number(d.ri); state.m=null; state.flash='ri'+d.ri; render(); if(window.innerWidth<900){ const el=document.getElementById('masseurs'); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); } return; }
+  if(d.m!==undefined){ state.m=Number(d.m); state.flash='m'+d.m; render(); return; }
+  if(d.next!==undefined){
+    if(state.changing){ state.mine = Object.assign({}, state.mine, { ri:state.ri, m:state.m }); state.changing=false; state.changedNote='เปลี่ยนคิวเรียบร้อย · รหัสการจองยังเป็นเลขเดิม'; go('ticket'); }
+    else { state.errors={}; go('form'); }
+    return;
+  }
+  if(d.confirm!==undefined){ confirmBooking(); return; }
+  if(d.search!==undefined){ const v=document.getElementById('l-emp').value.trim(); state.lookup={emp:v,found: !!(state.mine && state.mine.emp===v),bid:'',fails:state.lookup.fails,msg:''}; render(); return; }
+  if(d.cancel!==undefined || d.change!==undefined){
+    const L = state.lookup; L.bid = document.getElementById('l-bid').value.trim().toUpperCase();
+    if(L.bid !== state.mine.id){ L.fails++; L.msg = L.fails>=5 ? 'กรอกผิดครบ 5 ครั้ง · ระงับการเปลี่ยน/ยกเลิกชั่วคราว 15 นาที' : 'รหัสการจองไม่ถูกต้อง · เหลืออีก '+(5-L.fails)+' ครั้ง'; render(); return; }
+    L.msg=''; L.fails=0;
+    if(d.cancel!==undefined){ state.mine=null; L.found='cancelled'; render(); }
+    else { state.changing=true; state.ri=null; state.m=null; go('booking'); }
+  }
+});
+render();
+</script>
+</body>
+</html>
